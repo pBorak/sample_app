@@ -80,4 +80,21 @@ class UserTest < ActiveSupport::TestCase
       @user.destroy
     end
   end
+  test "feed should have the right posts" do
+    pawel = users(:pawel)
+    walter = users(:walter)
+    user_3 = users(:user_3)
+    # Posts from followed user
+    user_3.microposts.each do |post_following|
+      assert pawel.feed.include?(post_following)
+    end
+    # Posts from self
+    pawel.microposts.each do |post_self|
+      assert pawel.feed.include?(post_self)
+    end
+    # Posts from unfollowed user
+    walter.microposts.each do |post_unfollowed|
+      assert_not user_3.feed.include?(post_unfollowed)
+    end
+  end
 end
